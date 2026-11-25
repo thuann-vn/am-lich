@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nhận ngày giỗ, gia phả: Ngày Giỗ</title>
+<meta property="og:title" content="Mở mã chia sẻ trong app Ngày Giỗ">
+<meta property="og:description" content="Người thân gửi bạn ngày giỗ hoặc gia phả. Bấm để mở trong app.">
+<meta property="og:image" content="https://thuann-vn.github.io/am-lich/icon.png">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="style.css">
+<style>
+  .code { font: 700 22px/1.3 ui-monospace, Menlo, monospace; letter-spacing: 1px; margin: 6px 0 10px; word-break: break-all; }
+  .links button { font: inherit; font-weight: 600; border: 0; padding: 12px 20px; border-radius: 14px; background: #FBE9E7; color: var(--primary); cursor: pointer; }
+  ol { padding-left: 22px; margin: 8px 0; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+<header><img src="icon.png" alt=""><a href="./">Ngày Giỗ</a></header>
+<div id="ok">
+  <h1>Người thân gửi bạn ngày giỗ, gia phả</h1>
+  <p>Bấm nút dưới đây để mở trong app Ngày Giỗ, app sẽ hỏi trước khi thêm vào máy bạn.</p>
+  <div class="links"><a id="open" href="#">Mở trong app</a></div>
+
+  <div class="card">
+    <h2>Chưa có app?</h2>
+    <p>Tải app Ngày Giỗ (miễn phí), cài xong quay lại trang này bấm <b>Mở trong app</b>.</p>
+    <div class="links">
+      <a id="ios" href="https://apps.apple.com/app/id6817637717">App Store (iPhone)</a>
+      <a id="android" class="ghost" href="https://play.google.com/store/apps/details?id=com.thuanguyen.amlich">Google Play (Android)</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Nút không mở được app?</h2>
+    <p>Chép mã này:</p>
+    <p class="code" id="code"></p>
+    <div class="links"><button id="copy" type="button">Chép mã</button></div>
+    <ol>
+      <li>Mở app Ngày Giỗ, vào <b>Tiện ích → Quét mã</b> (gia phả: <b>Gia phả → Nhận gia phả</b>).</li>
+      <li>Bấm <b>Dán mã chữ</b>, dán mã vừa chép.</li>
+    </ol>
+    <p class="muted">Mã giữ được 30 ngày. Hết hạn thì nhờ người gửi tạo mã mới.</p>
+  </div>
+</div>
+<div id="bad" class="hidden">
+  <h1>Đường dẫn chưa đúng</h1>
+  <p>Đường dẫn này thiếu mã chia sẻ. Bạn nhờ người gửi chép lại nguyên đường dẫn nhé.</p>
+</div>
+<footer><a href="./">Trang chủ</a><a href="support.html">Hỗ trợ</a><a href="privacy.html">Quyền riêng tư</a></footer>
+</main>
+<script>
+  var c = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
+  if (!/^[A-Z0-9]{8}$/.test(c)) {
+    document.getElementById('ok').classList.add('hidden');
+    document.getElementById('bad').classList.remove('hidden');
+  } else {
+    var app = 'amlich://import?code=' + c;
+    var full = 'AMLICH3:' + c;
+    document.getElementById('open').href = app;
+    document.getElementById('code').textContent = full;
+    var ua = navigator.userAgent;
+    // Đưa nút tải đúng máy lên trước
+    if (/android/i.test(ua)) {
+      document.getElementById('ios').className = 'ghost';
+      document.getElementById('android').className = '';
+      document.getElementById('android').parentNode.prepend(document.getElementById('android'));
+    }
+    var copy = document.getElementById('copy');
+    copy.onclick = function () {
+      var done = function () { copy.textContent = 'Đã chép'; };
+      if (navigator.clipboard) navigator.clipboard.writeText(full).then(done, function () {});
+      else { var r = document.createRange(); r.selectNode(document.getElementById('code')); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand('copy'); done(); }
+    };
+    // Thử mở app ngay; trình duyệt trong Zalo, Messenger có thể chặn, khi đó người dùng bấm nút
+    setTimeout(function () { location.href = app; }, 300);
+  }
+</script>
+</body>
+</html>
